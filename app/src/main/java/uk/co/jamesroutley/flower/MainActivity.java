@@ -1,5 +1,7 @@
 package uk.co.jamesroutley.flower;
 
+// TODO rename to CameraLauncher
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

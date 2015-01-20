@@ -6,8 +6,12 @@ package uk.co.jamesroutley.flower;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,102 +21,112 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
-
+import uk.co.jamesroutley.flower.Movie.Movie;
+import uk.co.jamesroutley.flower.adapter.CustomListAdapter;
+import uk.co.jamesroutley.flower.app.AppController;
 
 
 public class ResultsActivity extends Activity {
+    // Log tag
+    private static final String TAG = ResultsActivity.class.getSimpleName();
 
-    ListView mainListView;
+    // Movies json url
+    private static final String url = "http://api.androidhive.info/json/movies.json";
+    private ProgressDialog pDialog;
+    private List<Movie> movieList = new ArrayList<Movie>();
+    private ListView listView;
+    private CustomListAdapter adapter;
 
-    public class Flower {
-        public String name;
-        public String latinname;
 
-        public Flower(String name, String latinname) {
-            this.name = name;
-            this.latinname = latinname;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        mainListView = (ListView) findViewById(R.id.main_listview);
+        listView = (ListView) findViewById(R.id.list);
+        adapter = new CustomListAdapter(this, movieList);
+        listView.setAdapter(adapter);
 
+        pDialog = new ProgressDialog(this);
+        // Showing progress dialog before making http request
+        pDialog.setMessage("Loading ...");
+        pDialog.show();
 
-        // Construct the data source
-        ArrayList<Flower> arrayOfFlowers = new ArrayList<Flower>();
-        // Create the adapter to convert the array to views
-        FlowersAdapter adapter = new FlowersAdapter(this, arrayOfFlowers);
-        // Attach the adapter to a ListView
-        //ListView listView = (ListView) findViewById(R.id.lvItems);
-        mainListView.setAdapter(adapter);
+        // Changing action bar colour
+        //getActionBar().setBackgroundDrawable(
+        //        new ColorDrawable(Color.parseColor("#1b1b1b")));
 
-        // Add item to adapter
-        Flower newFlower1 = new Flower("Daffodil", "Narcissus");
-        adapter.add(newFlower1);
-        /*
-        Flower newFlower = new Flower("Rose", "Rosa");
-        adapter.add(newFlower);
-        Flower newFlower2 = new Flower("Lilly", "Lilium");
-        adapter.add(newFlower2);
-        */
+        // Creating volley request obj
+        JsonArrayRequest movieReq = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d(TAG, response.toString());
+                        hidePDialog();
 
+                        // parsing JSON
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
 
-        /*
-        JSONObject rose = new JSONObject();
-        try {
-            rose.put("name", "Rose");
-            rose.put("latinname", "Rosa");
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(rose);
-        ArrayList<Flower> newFlowers = Flower.fromJson(jsonArray)
-        adapter.addAll(newFlowers);
-        */
+                                JSONObject obj = response.getJSONObject(i);
+                                Movie movie = new Movie();
+                                movie.setTitle(obj.getString("title"));
+                                movie.setThumbnailUrl(obj.getString("image"));
+                                movie.setRating(((Number) obj.get("rating"))
+                                        .doubleValue());
+                                movie.setYear(obj.getInt("releaseYear"));
+
+                                // Genre is a json array
+                                JSONArray genreArray = obj.getJSONArray("genre");
+                                ArrayList<String> genre = new ArrayList<String>();
+                                for (int j = 0; j < genreArray.length(); j++) {
+                                    genre.add((String) genreArray.get(j));
+                                }
+
+                                // adding Movie to movies array
+                                movie.setGenre(genre);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                            // notifying the list adapter about data changes
+                            // so it renders the list view with updated data
+                            adapter.notifyDataSetChanged();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            VolleyLog.d(TAG, "Error: " + error.getMessage());
+                            hidePDialog();
+                        }
+                    });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(movieReq);
     }
 
+    public void onDestroy() {
+        super.onDestroy();
+        hidePDialog();
+    }
 
-    //TODO ArrayAdapter class should maybe not be static (made static to allow ViewHolder to be static)
-    public static class FlowersAdapter extends ArrayAdapter<Flower> {
-        // View lookup cache
-        private static class ViewHolder {
-            TextView name;
-            TextView latinname;
-        }
-
-        public FlowersAdapter(Context context, ArrayList<Flower> flowers) {
-            super(context, R.layout.item_flower, flowers);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
-            Flower flower = getItem(position);
-            // Check if an existing view is being reused, otherwise inflate the view
-            ViewHolder viewHolder; // view lookup cache stored in tag
-            if (convertView == null) {
-                viewHolder = new ViewHolder();
-                LayoutInflater inflater = LayoutInflater.from(getContext());
-                convertView = inflater.inflate(R.layout.item_flower, parent, false);
-                viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
-                viewHolder.latinname = (TextView) convertView.findViewById(R.id.tvLatinName);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-            // Populate the data into the template view using the data object
-            viewHolder.name.setText(flower.name);
-            viewHolder.latinname.setText(flower.latinname);
-            // Return the completed view to render on screen
-            return convertView;
+    private void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
         }
     }
 
@@ -124,6 +138,9 @@ public class ResultsActivity extends Activity {
         return true;
     }
 
+
+    // TODO: used to implement functionality when a listview item is clicked
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -138,6 +155,7 @@ public class ResultsActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
 
 
