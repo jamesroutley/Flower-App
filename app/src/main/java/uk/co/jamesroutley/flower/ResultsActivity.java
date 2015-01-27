@@ -5,33 +5,26 @@ package uk.co.jamesroutley.flower;
 // TODO send photo, get 'data' back. Greymotion. Google developer interface
 
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+    import java.util.ArrayList;
+    import java.util.List;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
+    import org.json.JSONArray;
+    import org.json.JSONException;
+    import org.json.JSONObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+    import android.app.Activity;
+    import android.app.ProgressDialog;
+    import android.os.Bundle;
+    import android.util.Log;
+    import android.view.Menu;
+    import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
+    import com.android.volley.Response;
+    import com.android.volley.VolleyError;
+    import com.android.volley.VolleyLog;
+    import com.android.volley.toolbox.JsonArrayRequest;
+
+
 
 import uk.co.jamesroutley.flower.Movie.Movie;
 import uk.co.jamesroutley.flower.adapter.CustomListAdapter;
@@ -43,29 +36,27 @@ public class ResultsActivity extends Activity {
     private static final String TAG = ResultsActivity.class.getSimpleName();
 
     // Movies json url
-    private static final String url = "http://api.androidhive.info/json/movies.json";
+    private static final String url = "http://jamesroutley.co.uk/Flower-Classification/api.json";
     private ProgressDialog pDialog;
     private List<Movie> movieList = new ArrayList<Movie>();
     private ListView listView;
     private CustomListAdapter adapter;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        listView = (ListView) findViewById(R.id.list);
+        listView = (ListView) findViewById(R.id.list1);
         adapter = new CustomListAdapter(this, movieList);
         listView.setAdapter(adapter);
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
-        pDialog.setMessage("Loading ...");
+        pDialog.setMessage("Loading...");
         pDialog.show();
 
-        // Changing action bar colour
+        // changing action bar color
         //getActionBar().setBackgroundDrawable(
         //        new ColorDrawable(Color.parseColor("#1b1b1b")));
 
@@ -77,7 +68,7 @@ public class ResultsActivity extends Activity {
                         Log.d(TAG, response.toString());
                         hidePDialog();
 
-                        // parsing JSON
+                        // Parsing json
                         for (int i = 0; i < response.length(); i++) {
                             try {
 
@@ -89,35 +80,41 @@ public class ResultsActivity extends Activity {
                                         .doubleValue());
                                 movie.setYear(obj.getInt("releaseYear"));
 
-                                // Genre is a json array
-                                JSONArray genreArray = obj.getJSONArray("genre");
+                                // Genre is json array
+                                JSONArray genreArry = obj.getJSONArray("genre");
                                 ArrayList<String> genre = new ArrayList<String>();
-                                for (int j = 0; j < genreArray.length(); j++) {
-                                    genre.add((String) genreArray.get(j));
+                                for (int j = 0; j < genreArry.length(); j++) {
+                                    genre.add((String) genreArry.get(j));
                                 }
-
-                                // adding Movie to movies array
                                 movie.setGenre(genre);
+
+                                // adding movie to movies array
+                                movieList.add(movie);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
-                            // notifying the list adapter about data changes
-                            // so it renders the list view with updated data
-                            adapter.notifyDataSetChanged();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            VolleyLog.d(TAG, "Error: " + error.getMessage());
-                            hidePDialog();
-                        }
-                    });
+
+                        // notifying list adapter about data changes
+                        // so that it renders the list view with updated data
+                        adapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                hidePDialog();
+
+            }
+        });
+
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(movieReq);
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         hidePDialog();
@@ -130,33 +127,11 @@ public class ResultsActivity extends Activity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list_view, menu);
         return true;
     }
-
-
-    // TODO: used to implement functionality when a listview item is clicked
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
-
 
 }

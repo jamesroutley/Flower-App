@@ -12,7 +12,6 @@ public class Movie {
     private ArrayList<String> genre;
 
     public Movie() {
-
     }
 
     public Movie(String name, String thumbnailUrl, int year, double rating,
@@ -63,4 +62,5 @@ public class Movie {
     public void setGenre(ArrayList<String> genre) {
         this.genre = genre;
     }
+
 }
