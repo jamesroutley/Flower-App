@@ -21,7 +21,6 @@ import uk.co.jamesroutley.flower.app.AppController;
  * Created by admin on 20/01/15.
  */
 public class CustomListAdapter extends BaseAdapter {
-
     private Activity activity;
     private LayoutInflater inflater;
     private List<Movie> movieItems;
@@ -33,7 +32,7 @@ public class CustomListAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return movieItems.size();
     }
 
@@ -43,12 +42,13 @@ public class CustomListAdapter extends BaseAdapter {
     }
 
     @Override
-    public long getItemId(int position){
+    public long getItemId(int position) {
         return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         if (inflater == null)
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -81,7 +81,6 @@ public class CustomListAdapter extends BaseAdapter {
         for (String str : m.getGenre()) {
             genreStr += str + ", ";
         }
-        // TODO regex?
         genreStr = genreStr.length() > 0 ? genreStr.substring(0,
                 genreStr.length() - 2) : genreStr;
         genre.setText(genreStr);
@@ -90,7 +89,6 @@ public class CustomListAdapter extends BaseAdapter {
         year.setText(String.valueOf(m.getYear()));
 
         return convertView;
-
     }
 
 }

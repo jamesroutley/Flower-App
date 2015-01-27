@@ -13,6 +13,9 @@ import uk.co.jamesroutley.flower.util.LruBitmapCache;
 /**
  * Created by admin on 19/01/15.
  */
+
+
+
 public class AppController extends Application {
 
     public static final String TAG = AppController.class.getSimpleName();
