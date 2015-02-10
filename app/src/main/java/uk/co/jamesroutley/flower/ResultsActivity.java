@@ -42,6 +42,7 @@ public class ResultsActivity extends Activity {
     private ListView listView;
     private CustomListAdapter adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +57,7 @@ public class ResultsActivity extends Activity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        // changing action bar color
-        //getActionBar().setBackgroundDrawable(
-        //        new ColorDrawable(Color.parseColor("#1b1b1b")));
+        // change
 
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
@@ -76,6 +75,7 @@ public class ResultsActivity extends Activity {
                                 Movie movie = new Movie();
                                 movie.setTitle(obj.getString("title"));
                                 movie.setThumbnailUrl(obj.getString("image"));
+                               /*
                                 movie.setRating(((Number) obj.get("rating"))
                                         .doubleValue());
                                 movie.setYear(obj.getInt("releaseYear"));
@@ -87,9 +87,10 @@ public class ResultsActivity extends Activity {
                                     genre.add((String) genreArry.get(j));
                                 }
                                 movie.setGenre(genre);
-
+                                */
                                 // adding movie to movies array
                                 movieList.add(movie);
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();

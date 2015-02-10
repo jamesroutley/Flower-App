@@ -7,9 +7,9 @@ import java.util.ArrayList;
  */
 public class Movie {
     private String title, thumbnailUrl;
-    private int year;
-    private double rating;
-    private ArrayList<String> genre;
+    //private int year;
+    //private double rating;
+    //private ArrayList<String> genre;
 
     public Movie() {
     }
@@ -18,9 +18,9 @@ public class Movie {
                  ArrayList<String> genre) {
         this.title = name;
         this.thumbnailUrl = thumbnailUrl;
-        this.year = year;
-        this.rating = rating;
-        this.genre = genre;
+        //this.year = year;
+        //this.rating = rating;
+        //this.genre = genre;
     }
 
     public String getTitle() {
@@ -38,6 +38,8 @@ public class Movie {
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
+
+    /*
 
     public int getYear() {
         return year;
@@ -62,5 +64,7 @@ public class Movie {
     public void setGenre(ArrayList<String> genre) {
         this.genre = genre;
     }
+
+    */
 
 }
