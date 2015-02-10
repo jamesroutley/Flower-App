@@ -1,8 +1,4 @@
 package uk.co.jamesroutley.flower;
-// TODO use Volley
-// look at json (?)
-// https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-// TODO send photo, get 'data' back. Greymotion. Google developer interface
 
 
     import java.util.ArrayList;
@@ -57,8 +53,6 @@ public class ResultsActivity extends Activity {
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        // change
-
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
@@ -75,29 +69,14 @@ public class ResultsActivity extends Activity {
                                 Movie movie = new Movie();
                                 movie.setTitle(obj.getString("title"));
                                 movie.setThumbnailUrl(obj.getString("image"));
-                               /*
-                                movie.setRating(((Number) obj.get("rating"))
-                                        .doubleValue());
-                                movie.setYear(obj.getInt("releaseYear"));
 
-                                // Genre is json array
-                                JSONArray genreArry = obj.getJSONArray("genre");
-                                ArrayList<String> genre = new ArrayList<String>();
-                                for (int j = 0; j < genreArry.length(); j++) {
-                                    genre.add((String) genreArry.get(j));
-                                }
-                                movie.setGenre(genre);
-                                */
-                                // adding movie to movies array
                                 movieList.add(movie);
 
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
-
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
                         adapter.notifyDataSetChanged();
