@@ -60,9 +60,12 @@ public class CustomListAdapter extends BaseAdapter {
         NetworkImageView thumbNail = (NetworkImageView) convertView
                 .findViewById(R.id.thumbnail);
         TextView title = (TextView) convertView.findViewById(R.id.title);
+
+        /*
         TextView rating = (TextView) convertView.findViewById(R.id.rating);
         TextView genre = (TextView) convertView.findViewById(R.id.genre);
         TextView year = (TextView) convertView.findViewById(R.id.releaseYear);
+        */
 
         // getting movie data for the row
         Movie m = movieItems.get(position);
@@ -73,6 +76,7 @@ public class CustomListAdapter extends BaseAdapter {
         // title
         title.setText(m.getTitle());
 
+        /*
         // rating
         rating.setText("Rating: " + String.valueOf(m.getRating()));
 
@@ -87,6 +91,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         // release year
         year.setText(String.valueOf(m.getYear()));
+        */
 
         return convertView;
     }
