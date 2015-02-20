@@ -51,7 +51,7 @@ public class ResultsActivity extends Activity {
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
-        pDialog.show();
+        pDialog.show(); 
 
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
