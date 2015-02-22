@@ -13,6 +13,7 @@ package uk.co.jamesroutley.flower;
     import android.os.Bundle;
     import android.util.Log;
     import android.view.Menu;
+    import android.widget.ImageView;
     import android.widget.ListView;
 
     import com.android.volley.Response;
@@ -36,6 +37,7 @@ public class ResultsActivity extends Activity {
     private List<FlowerResult> flowerResultList = new ArrayList<FlowerResult>();
     private ListView listView;
     private CustomListAdapter adapter;
+    private ImageView mImageView;
 
 
     @Override
@@ -43,6 +45,8 @@ public class ResultsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        mImageView = (ImageView)findViewById(R.id.imageView1);
+        mImageView.setImageResource(R.drawable.ic_launcher);
         listView = (ListView) findViewById(R.id.list1);
         adapter = new CustomListAdapter(this, flowerResultList);
         listView.setAdapter(adapter);
