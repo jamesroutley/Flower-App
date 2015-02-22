@@ -10,6 +10,9 @@ package uk.co.jamesroutley.flower;
 
     import android.app.Activity;
     import android.app.ProgressDialog;
+    import android.content.Intent;
+    import android.graphics.Bitmap;
+    import android.graphics.BitmapFactory;
     import android.os.Bundle;
     import android.util.Log;
     import android.view.Menu;
@@ -38,16 +41,34 @@ public class ResultsActivity extends Activity {
     private ListView listView;
     private CustomListAdapter adapter;
     private ImageView mImageView;
+    private String filePath = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-
         mImageView = (ImageView)findViewById(R.id.imageView1);
-        mImageView.setImageResource(R.drawable.ic_launcher);
         listView = (ListView) findViewById(R.id.list1);
+
+        Intent intent = getIntent();
+        filePath = intent.getStringExtra("filePath");
+        if (filePath != null) {
+            // bimatp factory
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            // down sizing image as it throws OutOfMemory Exception for larger
+            // images
+            options.inSampleSize = 8;
+
+            final Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+
+            mImageView.setImageBitmap(bitmap);
+        }
+
+
+        //mImageView.setImageResource(R.drawable.ic_launcher);
+
         adapter = new CustomListAdapter(this, flowerResultList);
         listView.setAdapter(adapter);
 
