@@ -13,7 +13,7 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.List;
 
-import uk.co.jamesroutley.flower.Movie.Movie;
+import uk.co.jamesroutley.flower.FlowerResult.FlowerResult;
 import uk.co.jamesroutley.flower.R;
 import uk.co.jamesroutley.flower.app.AppController;
 
@@ -23,22 +23,22 @@ import uk.co.jamesroutley.flower.app.AppController;
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
-    private List<Movie> movieItems;
+    private List<FlowerResult> flowerResultItems;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public CustomListAdapter(Activity activity, List<Movie> movieItems) {
+    public CustomListAdapter(Activity activity, List<FlowerResult> flowerResultItems) {
         this.activity = activity;
-        this.movieItems = movieItems;
+        this.flowerResultItems = flowerResultItems;
     }
 
     @Override
     public int getCount() {
-        return movieItems.size();
+        return flowerResultItems.size();
     }
 
     @Override
     public Object getItem(int location) {
-        return movieItems.get(location);
+        return flowerResultItems.get(location);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CustomListAdapter extends BaseAdapter {
         */
 
         // getting movie data for the row
-        Movie m = movieItems.get(position);
+        FlowerResult m = flowerResultItems.get(position);
 
         // thumbnail image
         thumbNail.setImageUrl(m.getThumbnailUrl(), imageLoader);

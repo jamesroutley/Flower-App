@@ -6,7 +6,7 @@
     android:padding="8dp"
     android:orientation="vertical">
 
-    <!-- Movie Title -->
+    <!-- FlowerResult Title -->
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"

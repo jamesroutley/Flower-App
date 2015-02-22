@@ -21,9 +21,8 @@ package uk.co.jamesroutley.flower;
     import com.android.volley.toolbox.JsonArrayRequest;
 
 
-
-import uk.co.jamesroutley.flower.Movie.Movie;
-import uk.co.jamesroutley.flower.adapter.CustomListAdapter;
+    import uk.co.jamesroutley.flower.FlowerResult.FlowerResult;
+    import uk.co.jamesroutley.flower.adapter.CustomListAdapter;
 import uk.co.jamesroutley.flower.app.AppController;
 
 
@@ -34,7 +33,7 @@ public class ResultsActivity extends Activity {
     // Movies json url
     private static final String url = "http://jamesroutley.co.uk/Flower-Classification/api.json";
     private ProgressDialog pDialog;
-    private List<Movie> movieList = new ArrayList<Movie>();
+    private List<FlowerResult> flowerResultList = new ArrayList<FlowerResult>();
     private ListView listView;
     private CustomListAdapter adapter;
 
@@ -45,13 +44,13 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
 
         listView = (ListView) findViewById(R.id.list1);
-        adapter = new CustomListAdapter(this, movieList);
+        adapter = new CustomListAdapter(this, flowerResultList);
         listView.setAdapter(adapter);
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
-        pDialog.show(); 
+        pDialog.show();
 
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
@@ -66,11 +65,11 @@ public class ResultsActivity extends Activity {
                             try {
 
                                 JSONObject obj = response.getJSONObject(i);
-                                Movie movie = new Movie();
-                                movie.setTitle(obj.getString("title"));
-                                movie.setThumbnailUrl(obj.getString("image"));
+                                FlowerResult flowerResult = new FlowerResult();
+                                flowerResult.setTitle(obj.getString("title"));
+                                flowerResult.setThumbnailUrl(obj.getString("image"));
 
-                                movieList.add(movie);
+                                flowerResultList.add(flowerResult);
 
 
                             } catch (JSONException e) {
