@@ -4,6 +4,7 @@ package uk.co.jamesroutley.flower;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
     static final int REQUEST_TAKE_PHOTO = 1;
     //private ImageView mImageView;
     String mCurrentPhotoPath;
+    private Uri fileUri; // file URI to store image
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,8 @@ public class MainActivity extends Activity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
+                fileUri = Uri.fromFile(photoFile);
+
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -90,16 +94,39 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Here we store the file url as it will be null after returning from camera
+     * app
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save file url in bundle as it will be null on screen orientation
+        // changes
+        outState.putParcelable("file_uri", fileUri);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // get the file url
+        fileUri = savedInstanceState.getParcelable("file_uri");
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             // galleryAddPic();
-            /*
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
-            */
+
+            // Bundle extras = data.getExtras();
+            // Bitmap imageBitmap = (Bitmap) extras.get("data");
+            // mImageView.setImageBitmap(imageBitmap);
+
             Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("filePath", fileUri.getPath());
+
             //EditText editText = (EditText) findViewById(R.id.edit_message);
             //String message = editText.getText().toString();
             //intent.putExtra(EXTRA_MESSAGE, message);

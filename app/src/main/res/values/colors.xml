@@ -8,4 +8,10 @@
     <color name="list_row_hover_start_color">#ebeef0</color>
     <color name="list_row_hover_end_color">#ebeef0</color>
 
+    <color name="view_background">#ECF9F2</color>
+    <color name="btn_bg">#767D79</color>
+    <color name="white">#FFFFFF</color>
+    <color name="txt_font">#4e5572</color>
+    <!-- color name="action_bar">#1f2649</color -->
+
 </resources>
