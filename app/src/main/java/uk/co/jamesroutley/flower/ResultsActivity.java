@@ -4,6 +4,11 @@ package uk.co.jamesroutley.flower;
     import java.io.DataOutputStream;
     import java.io.File;
     import java.io.FileInputStream;
+    import java.io.IOException;
+    import java.io.InputStream;
+    import java.io.InputStreamReader;
+    import java.io.Reader;
+    import java.io.UnsupportedEncodingException;
     import java.net.HttpURLConnection;
     import java.net.MalformedURLException;
     import java.net.URL;
@@ -240,9 +245,17 @@ public class ResultsActivity extends Activity {
                 // Responses from the server (code and message)
                 serverResponseCode = conn.getResponseCode();
                 String serverResponseMessage = conn.getResponseMessage();
+                InputStream is = conn.getInputStream();
+                //TODO This reads in the first 500 characters of the input stream. Fix so only the
+                // input stream is read.
+                String contentAsString = readIt(is, 500);
+
+                Log.v("input stream is:", "content as string:" + contentAsString);
 
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
+
+
 
                 if(serverResponseCode == 200){
 
@@ -300,6 +313,14 @@ public class ResultsActivity extends Activity {
         } // End else block
     }
 
+    // Reads an InputStream and converts it to a String.
+    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = null;
+        reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
+    }
 
 
     @Override
