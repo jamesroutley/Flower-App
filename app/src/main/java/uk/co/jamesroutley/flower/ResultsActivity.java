@@ -175,6 +175,9 @@ public class ResultsActivity extends Activity {
         byte[] buffer;
         int maxBufferSize = 1 * 1024 * 1024;
         File sourceFile = new File(sourceFileUri);
+        final String fileNameTest = sourceFile.getName();
+
+        Log.v(TAG, "this" + fileNameTest);
 
         if (!sourceFile.isFile()) {
 
