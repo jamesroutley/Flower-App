@@ -59,7 +59,6 @@ public class ResultsActivity extends Activity {
     // TODO make private?
     ProgressDialog dialog = null;
     int serverResponseCode = 0;
-    TextView messageText;
     String upLoadServerUri = null;
 
 
@@ -69,7 +68,6 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         mImageView = (ImageView)findViewById(R.id.imageView1);
         listView = (ListView) findViewById(R.id.list1);
-        messageText  = (TextView)findViewById(R.id.messageText);
 
         upLoadServerUri = "http://10.0.3.2:5000/upload";
 
@@ -94,14 +92,9 @@ public class ResultsActivity extends Activity {
         // UPLOAD IMAGE
         dialog = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
 
+        // TODO use Async task?
         new Thread(new Runnable() {
             public void run() {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        messageText.setText("uploading started.....");
-                    }
-                });
-
                 uploadFile(filePath);
 
             }
@@ -180,21 +173,10 @@ public class ResultsActivity extends Activity {
         Log.v(TAG, "this" + fileNameTest);
 
         if (!sourceFile.isFile()) {
-
             dialog.dismiss();
-
             Log.e("uploadFile", "Source File not exist :"
                     +fileName);
-
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    messageText.setText("Source File not exist :"
-                            +fileName);
-                }
-            });
-
             return 0;
-
         }
         else
         {
@@ -264,12 +246,6 @@ public class ResultsActivity extends Activity {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
-
-                            String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
-                                    +" http://www.androidexample.com/media/uploads/"
-                                    +fileName;
-
-                            messageText.setText(msg);
                             Toast.makeText(ResultsActivity.this, "File Upload Complete.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -288,7 +264,6 @@ public class ResultsActivity extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        messageText.setText("MalformedURLException Exception : check script url.");
                         Toast.makeText(ResultsActivity.this, "MalformedURLException",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -302,7 +277,6 @@ public class ResultsActivity extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        messageText.setText("Got Exception : see logcat ");
                         Toast.makeText(ResultsActivity.this, "Got Exception : see logcat ",
                                 Toast.LENGTH_SHORT).show();
                     }
