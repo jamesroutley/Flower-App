@@ -1,6 +1,7 @@
 package uk.co.jamesroutley.flower;
 
 
+    import java.io.BufferedReader;
     import java.io.DataOutputStream;
     import java.io.File;
     import java.io.FileInputStream;
@@ -59,7 +60,6 @@ public class ResultsActivity extends Activity {
     // TODO make private?
     ProgressDialog dialog = null;
     int serverResponseCode = 0;
-    TextView messageText;
     String upLoadServerUri = null;
 
 
@@ -69,7 +69,6 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         mImageView = (ImageView)findViewById(R.id.imageView1);
         listView = (ListView) findViewById(R.id.list1);
-        messageText  = (TextView)findViewById(R.id.messageText);
 
         upLoadServerUri = "http://10.0.3.2:5000/upload";
 
@@ -94,14 +93,9 @@ public class ResultsActivity extends Activity {
         // UPLOAD IMAGE
         dialog = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
 
+        // TODO use Async task?
         new Thread(new Runnable() {
             public void run() {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        messageText.setText("uploading started.....");
-                    }
-                });
-
                 uploadFile(filePath);
 
             }
@@ -163,7 +157,7 @@ public class ResultsActivity extends Activity {
     public int uploadFile(String sourceFileUri) {
 
         //TODO: fileName is currently set to equal filePath. Messy.
-        final String fileName = sourceFileUri;
+        //final String fileName = sourceFileUri;
 
 
         HttpURLConnection conn = null;
@@ -175,26 +169,15 @@ public class ResultsActivity extends Activity {
         byte[] buffer;
         int maxBufferSize = 1 * 1024 * 1024;
         File sourceFile = new File(sourceFileUri);
-        final String fileNameTest = sourceFile.getName();
+        final String fileName = sourceFile.getName();
 
-        Log.v(TAG, "this" + fileNameTest);
+        Log.v(TAG, "this" + fileName);
 
         if (!sourceFile.isFile()) {
-
             dialog.dismiss();
-
             Log.e("uploadFile", "Source File not exist :"
-                    +fileName);
-
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    messageText.setText("Source File not exist :"
-                            +fileName);
-                }
-            });
-
+                    +sourceFileUri);
             return 0;
-
         }
         else
         {
@@ -218,6 +201,7 @@ public class ResultsActivity extends Activity {
                 dos = new DataOutputStream(conn.getOutputStream());
 
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
+                //TODO I'm not sure what the 'name' property is for
                 dos.writeBytes("Content-Disposition: form-data; name="+fileName+";filename="
                                 + fileName + "" + lineEnd);
 
@@ -251,7 +235,7 @@ public class ResultsActivity extends Activity {
                 InputStream is = conn.getInputStream();
                 //TODO This reads in the first 500 characters of the input stream. Fix so only the
                 // input stream is read.
-                String contentAsString = readIt(is, 500);
+                String contentAsString = readIt(is);
 
                 Log.v("input stream is:", "content as string:" + contentAsString);
 
@@ -264,12 +248,6 @@ public class ResultsActivity extends Activity {
 
                     runOnUiThread(new Runnable() {
                         public void run() {
-
-                            String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
-                                    +" http://www.androidexample.com/media/uploads/"
-                                    +fileName;
-
-                            messageText.setText(msg);
                             Toast.makeText(ResultsActivity.this, "File Upload Complete.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -288,7 +266,6 @@ public class ResultsActivity extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        messageText.setText("MalformedURLException Exception : check script url.");
                         Toast.makeText(ResultsActivity.this, "MalformedURLException",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -302,7 +279,6 @@ public class ResultsActivity extends Activity {
 
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        messageText.setText("Got Exception : see logcat ");
                         Toast.makeText(ResultsActivity.this, "Got Exception : see logcat ",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -317,12 +293,14 @@ public class ResultsActivity extends Activity {
     }
 
     // Reads an InputStream and converts it to a String.
-    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
+    public String readIt(InputStream stream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        return sb.toString();
     }
 
 
