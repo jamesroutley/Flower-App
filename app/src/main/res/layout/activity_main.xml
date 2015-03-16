@@ -3,49 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/view_background"
+    android:background="@drawable/main_activity_background"
     android:baselineAligned="false"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+
+    <!-- Capture picture button -->
+
+    <Button
+        android:id="@+id/btnCapturePicture"
+        android:onClick="takePhoto"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:background="@drawable/photo_button_resource"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp" />
 
-        <!-- Capture picture button -->
 
-        <Button
-            android:id="@+id/btnCapturePicture"
-            android:onClick="takePhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@color/btn_bg"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/btnTakePicture"
-            android:textColor="@color/white" />
+    <!-- Upload button -->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center_horizontal"
-            android:text="@string/or"
-            android:textColor="@color/txt_font" />
+    <Button
+        android:id="@+id/btnUploadPicture"
+        android:onClick="uploadPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/upload_button_resource"
+        android:layout_marginBottom="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
-        <!-- Record video button -->
 
-        <Button
-            android:id="@+id/btnUploadPicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/btn_bg"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/btnUploadPicture"
-            android:textColor="@color/white" />
-    </LinearLayout>
 </RelativeLayout>

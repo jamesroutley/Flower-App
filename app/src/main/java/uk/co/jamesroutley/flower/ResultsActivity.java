@@ -156,12 +156,8 @@ public class ResultsActivity extends Activity {
     @SuppressLint("LongLogTag")
     public int uploadFile(String sourceFileUri) {
 
-        //TODO: fileName is currently set to equal filePath. Messy.
-        //final String fileName = sourceFileUri;
-
-
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
+        HttpURLConnection conn;// = null;
+        DataOutputStream dos;// = null;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
@@ -233,8 +229,7 @@ public class ResultsActivity extends Activity {
                 serverResponseCode = conn.getResponseCode();
                 String serverResponseMessage = conn.getResponseMessage();
                 InputStream is = conn.getInputStream();
-                //TODO This reads in the first 500 characters of the input stream. Fix so only the
-                // input stream is read.
+
                 String contentAsString = readIt(is);
 
                 Log.v("input stream is:", "content as string:" + contentAsString);
