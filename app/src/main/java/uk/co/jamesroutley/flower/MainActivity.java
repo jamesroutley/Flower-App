@@ -4,6 +4,7 @@ package uk.co.jamesroutley.flower;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.nfc.Tag;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +29,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
     static final int REQUEST_TAKE_PHOTO = 1;
+    private static int RESULT_LOAD_IMAGE = 2;
     //private ImageView mImageView;
     String mCurrentPhotoPath;
     private Uri fileUri; // file URI to store image
@@ -35,8 +38,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //mImageView = (ImageView)findViewById(R.id.imageView1);
     }
 
 
@@ -62,13 +63,22 @@ public class MainActivity extends Activity {
 
     // Method called by clicking the photoButton
     public void takePhoto(View view) {
-        Log.v(TAG, "intent out");
+        // Log.v(TAG, "intent out");
         dispatchTakePictureIntent();
-
     }
 
+    // Method called by clinking the uploadButton
+    public void uploadPhoto(View view) {
+        Toast.makeText(MainActivity.this, "Upload Photo",
+                Toast.LENGTH_SHORT).show();
 
-    // static final int REQUEST_TAKE_PHOTO = 1;
+        Intent i = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
+    }
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -117,20 +127,36 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //TODO: not sure what the line below does:
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            // galleryAddPic();
-
-            // Bundle extras = data.getExtras();
-            // Bitmap imageBitmap = (Bitmap) extras.get("data");
-            // mImageView.setImageBitmap(imageBitmap);
-
             Intent intent = new Intent(this, ResultsActivity.class);
             intent.putExtra("filePath", fileUri.getPath());
-
-            //EditText editText = (EditText) findViewById(R.id.edit_message);
-            //String message = editText.getText().toString();
-            //intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
+        }
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            //Log.v(TAG, picturePath);
+
+            Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("filePath", picturePath);
+            startActivity(intent);
+
+            //ImageView imageView = (ImageView) findViewById(R.id.imgView);
+            //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
         }
     }
 
@@ -151,17 +177,6 @@ public class MainActivity extends Activity {
         Log.v(TAG, Uri.fromFile(image).toString());
         return image;
     }
-
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-        Log.v(TAG, "picture added to gallery");
-    }
-
 
 
 }
