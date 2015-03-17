@@ -38,6 +38,7 @@ package uk.co.jamesroutley.flower;
     import com.android.volley.VolleyError;
     import com.android.volley.VolleyLog;
     import com.android.volley.toolbox.JsonArrayRequest;
+    import com.squareup.picasso.Picasso;
 
 
     import uk.co.jamesroutley.flower.FlowerResult.FlowerResult;
@@ -74,6 +75,10 @@ public class ResultsActivity extends Activity {
 
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
+        //TODO: change this name, pass the file to the Upload function
+        File sourceFile = new File(filePath);
+        Picasso.with(this).load(sourceFile).into(mImageView);
+        /*
         if (filePath != null) {
             // bitmap factory
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -86,7 +91,7 @@ public class ResultsActivity extends Activity {
 
             mImageView.setImageBitmap(bitmap);
         }
-
+        */
         Log.v(TAG, filePath);
 
 
