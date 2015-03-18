@@ -3,10 +3,11 @@ package uk.co.jamesroutley.flower.util;
 /**
  * Created by admin on 19/01/15.
  */
-import com.android.volley.toolbox.ImageLoader.ImageCache;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+
+import com.android.volley.toolbox.ImageLoader.ImageCache;
 
 public class LruBitmapCache extends LruCache<String, Bitmap> implements
         ImageCache {
