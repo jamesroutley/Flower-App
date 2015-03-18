@@ -5,4 +5,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="FlowerList.Name" parent="android:TextAppearance.Holo.Large.Inverse">
+        <item name="android:textColor">@color/flower_list_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+        
+
 </resources>

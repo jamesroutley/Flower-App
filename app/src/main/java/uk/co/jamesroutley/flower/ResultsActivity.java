@@ -235,9 +235,12 @@ public class ResultsActivity extends Activity {
                 String serverResponseMessage = conn.getResponseMessage();
                 InputStream is = conn.getInputStream();
 
-                String contentAsString = readIt(is);
+                JSONArray jsonArray = convertInputStreamToJSONObject(is);
+                Log.v("input stream is:", "jsonArray:" + jsonArray.toString());
 
-                Log.v("input stream is:", "content as string:" + contentAsString);
+
+
+
 
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
@@ -292,15 +295,15 @@ public class ResultsActivity extends Activity {
         } // End else block
     }
 
-    // Reads an InputStream and converts it to a String.
-    public String readIt(InputStream stream) throws IOException {
+    // Reads an InputStream and converts it to a JSONArray.
+    public JSONArray convertInputStreamToJSONObject(InputStream stream) throws IOException, JSONException {
         StringBuilder sb = new StringBuilder();
         BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
         String line;
         while ((line = rd.readLine()) != null) {
             sb.append(line);
         }
-        return sb.toString();
+        return new JSONArray(sb.toString());
     }
 
 
