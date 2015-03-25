@@ -150,8 +150,15 @@ public class ResultsActivity extends Activity {
                 String serverResponseMessage = conn.getResponseMessage();
                 InputStream is = conn.getInputStream();
 
+                //close the streams
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+                //TODO can remove final after convert to AsyncTask
                 final JSONArray jsonArray = convertInputStreamToJSONObject(is);
                 Log.v("input stream is:", "jsonArray:" + jsonArray.toString());
+
 
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -160,13 +167,8 @@ public class ResultsActivity extends Activity {
                 });
 
 
-
-
-
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
-
-
 
                 if(serverResponseCode == 200){
 
@@ -178,10 +180,7 @@ public class ResultsActivity extends Activity {
                     });
                 }
 
-                //close the streams //
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
+
 
             } catch (MalformedURLException ex) {
 
