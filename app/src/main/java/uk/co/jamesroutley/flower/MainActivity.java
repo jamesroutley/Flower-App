@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -142,11 +143,11 @@ public class MainActivity extends Activity {
             cursor.moveToFirst();
 
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
+            String filePath = cursor.getString(columnIndex);
             cursor.close();
 
             Intent intent = new Intent(this, ResultsActivity.class);
-            intent.putExtra("filePath", picturePath);
+            intent.putExtra("filePath", filePath);
             startActivity(intent);
         }
     }

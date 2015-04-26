@@ -14,18 +14,25 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name="uk.co.jamesroutley.flower.MainActivity"
             android:label="@string/app_name" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
         <activity
             android:name=".ResultsActivity"
+            android:label="@string/app_name" >
+        </activity>
 
+        <activity
+            android:name=".DetailActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

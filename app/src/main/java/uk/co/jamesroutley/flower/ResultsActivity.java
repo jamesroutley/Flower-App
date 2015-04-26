@@ -2,12 +2,15 @@ package uk.co.jamesroutley.flower;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -31,189 +35,192 @@ import java.net.URL;
 import uk.co.jamesroutley.flower.adapter.FlowerAdapter;
 
 
-public class ResultsActivity extends Activity {
+public class ResultsActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final String TAG = ResultsActivity.class.getSimpleName();
 
-    private ImageView mImageView;
-    private String filePath = null;
-    private ProgressDialog dialog = null;
-    private int serverResponseCode = 0;
     private String upLoadServerUri = null;
     private FlowerAdapter mFlowerAdapter;
-    private ListView mainListView;
+    JSONArray jsonArray = null;
+    ListView mainListView;
+    String filePath = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        upLoadServerUri = "http://10.0.3.2:5000/upload";
 
-        mImageView = (ImageView)findViewById(R.id.imageView1);
-        mainListView = (ListView) findViewById(R.id.list1);
+        upLoadServerUri = "http://10.0.3.2:5000/androidupload";
+        ImageView mImageView = (ImageView) findViewById(R.id.capturedImageView);
+        mainListView = (ListView) findViewById(R.id.resultsList);
         mFlowerAdapter = new FlowerAdapter(this, getLayoutInflater());
         mainListView.setAdapter(mFlowerAdapter);
-
+        mainListView.setOnItemClickListener(this);
 
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
         final File sourceFile = new File(filePath);
         Picasso.with(this).load(sourceFile).into(mImageView);
 
-        //Log.v(TAG, filePath);
+
+        //JSONArray jsonTemp = null;
+
+        //mFlowerAdapter.updateData(jsonTemp);
 
         // UPLOAD IMAGE
-        dialog = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
-        // TODO use Async task
-        new Thread(new Runnable() {
-            public void run() {
-                uploadFile(sourceFile);
+        //dialog = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
+        new uploadFileTask().execute(sourceFile);
+    }
 
-            }
-        }).start();
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = jsonArray.getJSONObject(position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // create an Intent to take you over to a new DetailActivity
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+
+        // pack away the data about the cover
+        // into your Intent before you head out
+        detailIntent.putExtra("jsonObject", jsonObject.toString());
+        detailIntent.putExtra("filePath", filePath);
+
+        // TODO: add any other data you'd like as Extras
+
+        // start the next Activity using your prepared Intent
+        startActivity(detailIntent);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
 
-    @SuppressLint("LongLogTag")
-    public int uploadFile(File sourceFile) {
+    public class uploadFileTask extends AsyncTask<File, Void, JSONArray> {
 
-        HttpURLConnection conn;
-        DataOutputStream dos;
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
-        final String fileName = sourceFile.getName();
 
-        //Log.v(TAG, "this" + fileName);
+        @SuppressLint("LongLogTag")
+        @Override
+        protected JSONArray doInBackground(File... params) {
+            File sourceFile = params[0];
+            HttpURLConnection conn;
+            DataOutputStream dos;
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";
+            int bytesRead, bytesAvailable, bufferSize;
+            byte[] buffer;
+            int maxBufferSize = 1 * 1024 * 1024;
+            final String fileName = sourceFile.getName();
 
-        if (!sourceFile.isFile()) {
-            dialog.dismiss();
-            Log.e("uploadFile", "Source File not exist :"
-                    +fileName);
-            return 0;
-        }
-        else
-        {
-            try {
 
-                // open a URL connection to the Servlet
-                FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(upLoadServerUri);
+            //Log.v(TAG, "this" + fileName);
 
-                // Open a HTTP  connection to  the URL
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fileName);
+            if (!sourceFile.isFile()) {
+                //dialog.dismiss();
+                Log.e(TAG, "Source File not exist :"
+                        +fileName);
+            }
+            else
+            {
+                try {
 
-                dos = new DataOutputStream(conn.getOutputStream());
+                    // open a URL connection to the Servlet
+                    FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                    URL url = new URL(upLoadServerUri);
 
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                //TODO I'm not sure what the 'name' property is for
-                dos.writeBytes("Content-Disposition: form-data; name="+fileName+";filename="
-                                + fileName + "" + lineEnd);
+                    // Open a HTTP  connection to  the URL
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true); // Allow Inputs
+                    conn.setDoOutput(true); // Allow Outputs
+                    conn.setUseCaches(false); // Don't use a Cached Copy
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Connection", "Keep-Alive");
+                    conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                    conn.setRequestProperty("uploaded_file", fileName);
 
-                        dos.writeBytes(lineEnd);
+                    dos = new DataOutputStream(conn.getOutputStream());
 
-                // create a buffer of  maximum size
-                bytesAvailable = fileInputStream.available();
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    //TODO I'm not sure what the 'name' property is for
+                    dos.writeBytes("Content-Disposition: form-data; name="+fileName+";filename="
+                            + fileName + "" + lineEnd);
 
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
+                    dos.writeBytes(lineEnd);
 
-                // read file and write it into form...
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-
-                    dos.write(buffer, 0, bufferSize);
+                    // create a buffer of  maximum size
                     bytesAvailable = fileInputStream.available();
+
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    buffer = new byte[bufferSize];
+
+                    // read file and write it into form...
                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
+                    while (bytesRead > 0) {
+
+                        dos.write(buffer, 0, bufferSize);
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                    }
+
+                    // send multipart form data necessary after file data...
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                    // Responses from the server (code and message)
+                    int serverResponseCode = conn.getResponseCode();
+                    String serverResponseMessage = conn.getResponseMessage();
+                    InputStream is = conn.getInputStream();
+
+                    //close the streams
+                    fileInputStream.close();
+                    dos.flush();
+                    dos.close();
+
+                    jsonArray = convertInputStreamToJSONObject(is);
+                    Log.v(TAG, "input stream is: jsonArray:" + jsonArray.toString());
+                    Log.i(TAG, "HTTP Response is : "
+                            + serverResponseMessage + ": " + serverResponseCode);
+
+                } catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+                    Log.e(TAG, "Upload file to server error: " + ex.getMessage(), ex);
+                    jsonArray = null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Upload file to server Exception : "
+                            + e.getMessage(), e);
+                    jsonArray = null;
                 }
-
-                // send multipart form data necessary after file data...
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // Responses from the server (code and message)
-                serverResponseCode = conn.getResponseCode();
-                String serverResponseMessage = conn.getResponseMessage();
-                InputStream is = conn.getInputStream();
-
-                //close the streams
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
-
-                //TODO can remove final after convert to AsyncTask
-                final JSONArray jsonArray = convertInputStreamToJSONObject(is);
-                Log.v("input stream is:", "jsonArray:" + jsonArray.toString());
+            } // End else block
+            return jsonArray;
+        }
 
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        mFlowerAdapter.updateData(jsonArray);
-                    }
-                });
+        @Override
+        protected void onPostExecute (JSONArray jsonArray) {
 
-
-                Log.i("uploadFile", "HTTP Response is : "
-                        + serverResponseMessage + ": " + serverResponseCode);
-
-                if(serverResponseCode == 200){
-
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(ResultsActivity.this, "File Upload Complete.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-
-
-            } catch (MalformedURLException ex) {
-
-                dialog.dismiss();
-                ex.printStackTrace();
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(ResultsActivity.this, "MalformedURLException",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-            } catch (Exception e) {
-
-                dialog.dismiss();
-                e.printStackTrace();
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(ResultsActivity.this, "Got Exception : see logcat ",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Log.e("Upload file to server Exception", "Exception : "
-                        + e.getMessage(), e);
+            if (jsonArray != null) {
+                mFlowerAdapter.updateData(jsonArray);
             }
-            dialog.dismiss();
-            return serverResponseCode;
+            else {
+                Toast.makeText(ResultsActivity.this, "Upload Error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
 
-        } // End else block
+
     }
+
 
     // Reads an InputStream and converts it to a JSONArray.
     public JSONArray convertInputStreamToJSONObject(InputStream stream) throws IOException, JSONException {
