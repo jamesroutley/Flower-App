@@ -56,12 +56,12 @@ public class FlowerAdapter extends BaseAdapter {
         if (convertView == null) {
 
             // Inflate the custom row layout from your XML.
-            convertView = mInflater.inflate(R.layout.list_row_new, null);
+            convertView = mInflater.inflate(R.layout.list_row, null);
 
             // create a new "Holder" with subviews
             holder = new ViewHolder();
             holder.thumbnailImageView = (ImageView) convertView.findViewById(R.id.image);
-            holder.titleTextView = (TextView) convertView.findViewById(R.id.name);
+            holder.commonNameTextView = (TextView) convertView.findViewById(R.id.name);
 
             // hang onto this holder for future recyclage
             convertView.setTag(holder);
@@ -75,23 +75,23 @@ public class FlowerAdapter extends BaseAdapter {
         // Get the current book's data in JSON form
         JSONObject jsonObject = (JSONObject) getItem(position);
 
-        String imageUrl = jsonObject.optString("image");
+        String imageUrl = "http://10.0.3.2:5000/img/" + jsonObject.optString("image");
 
         // Use Picasso to load the image
         // Temporarily have a placeholder in case it's slow to load
-        Picasso.with(mContext).load(imageUrl).placeholder(R.drawable.ic_launcher).into(holder.thumbnailImageView);
+        Picasso.with(mContext).load(imageUrl).placeholder(R.drawable.progress_animation).into(holder.thumbnailImageView);
 
 
-        // Grab the title and author from the JSON
+        // Grab the text info from the JSON
         String flowerName = "";
 
 
-        if (jsonObject.has("title")) {
-            flowerName = jsonObject.optString("title");
+        if (jsonObject.has("common_name")) {
+            flowerName = jsonObject.optString("common_name");
         }
 
         // Send String to the TextViews for display
-        holder.titleTextView.setText(flowerName);
+        holder.commonNameTextView.setText(flowerName);
 
         return convertView;
     }
@@ -100,7 +100,7 @@ public class FlowerAdapter extends BaseAdapter {
     // inflation and finding by ID once ever per View
     private static class ViewHolder {
         public ImageView thumbnailImageView;
-        public TextView titleTextView;
+        public TextView commonNameTextView;
     }
 
     public void updateData(JSONArray jsonArray) {

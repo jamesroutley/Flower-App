@@ -1,15 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_color_dark</item>
+        <item name="android:textColorPrimary">@color/text_color_primary</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
+
+
+
 
     <style name="FlowerList.Name" parent="android:TextAppearance.Holo.Large.Inverse">
         <item name="android:textColor">@color/flower_list_text</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
-        
+
+
+
 
 </resources>
