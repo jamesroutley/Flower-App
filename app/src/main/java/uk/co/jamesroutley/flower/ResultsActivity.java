@@ -66,13 +66,19 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
         final File sourceFile = new File(filePath);
         Picasso.with(this).load(sourceFile).into(mImageView);
 
-
-        //JSONArray jsonTemp = null;
-
-        //mFlowerAdapter.updateData(jsonTemp);
-
-        progress = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
-        new uploadFileTask().execute(sourceFile);
+        if (savedInstanceState != null) {
+            try {
+                String jsonString = savedInstanceState.getString("jsonArray");
+                jsonArray = new JSONArray(jsonString);
+                mFlowerAdapter.updateData(jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            progress = ProgressDialog.show(ResultsActivity.this, "", "Uploading image...", true);
+            new uploadFileTask().execute(sourceFile);
+        }
     }
 
     @Override
@@ -239,6 +245,15 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        Log.v(TAG, jsonArray.toString());
+        savedInstanceState.putString("jsonArray", jsonArray.toString());
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     @Override
     public void onDestroy() {

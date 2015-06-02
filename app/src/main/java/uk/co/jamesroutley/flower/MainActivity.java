@@ -67,8 +67,8 @@ public class MainActivity extends ActionBarActivity {
 
     // Method called by clinking the uploadButton
     public void uploadPhoto(View view) {
-        Toast.makeText(MainActivity.this, "Upload Photo",
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity.this, "Upload Photo",
+//                Toast.LENGTH_SHORT).show();
 
         Intent i = new Intent(
                 Intent.ACTION_PICK,

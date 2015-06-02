@@ -103,6 +103,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0.5"
             android:text="Wikipedia"
+            android:onClick="searchWiki"
             android:id="@+id/wiki_button"
             android:layout_marginLeft="10dp"/>
 
@@ -114,6 +115,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="0.5"
             android:text="Google"
+            android:onClick="searchGoogle"
             android:id="@+id/google_button" />
 
 
