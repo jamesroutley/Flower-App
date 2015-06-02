@@ -18,6 +18,23 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="FlowerList.Common_name" parent="android:TextAppearance.Holo.Large.Inverse">
+        <item name="android:textColor">@color/detail_name_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="FlowerList.Genus" parent="android:TextAppearance.Holo.Large.Inverse">
+        <item name="android:textColor">@color/detail_genus_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="FlowerList.Wiki_text" parent="android:TextAppearance.Holo.Large.Inverse">
+        <item name="android:textColor">@color/detail_wiki_text</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 
 
 

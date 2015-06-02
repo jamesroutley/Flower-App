@@ -33,6 +33,7 @@ public class DetailActivity extends ActionBarActivity {
         ImageView servedImageView = (ImageView) findViewById(R.id.servedImageView);
         TextView commonNameTextView = (TextView) findViewById(R.id.commonName);
         TextView genusTextView = (TextView) findViewById(R.id.genus);
+        TextView wikiTextView = (TextView) findViewById(R.id.wiki_text);
 
         // Load intent info
         JSONObject jsonObject = null;
@@ -42,8 +43,8 @@ public class DetailActivity extends ActionBarActivity {
         try {
             jsonObject = new JSONObject(jsonString);
 
-            Toast.makeText(DetailActivity.this, jsonObject.toString(),
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(DetailActivity.this, jsonObject.toString(),
+//                    Toast.LENGTH_LONG).show();
 
             Log.v(TAG, jsonObject.toString());
         } catch (JSONException e) {
@@ -57,10 +58,12 @@ public class DetailActivity extends ActionBarActivity {
         String servedImageUrl = null;
         String commonName = null;
         String genus = null;
+        String wiki_info = null;
         if (jsonObject != null) {
             servedImageUrl = "http://10.0.3.2:5000/img/" + jsonObject.optString("image");
             commonName = jsonObject.optString("common_name");
             genus = jsonObject.optString("genus");
+            wiki_info = jsonObject.optString("wiki_info");
         }
 
         Picasso.with(this).load(sourceFile).placeholder(R.drawable.progress_animation).into(capturedImageView);
@@ -68,6 +71,7 @@ public class DetailActivity extends ActionBarActivity {
 
         commonNameTextView.setText(commonName);
         genusTextView.setText(genus);
+        wikiTextView.setText(wiki_info);
     }
 
     @Override

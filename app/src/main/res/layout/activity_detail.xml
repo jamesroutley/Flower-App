@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -48,10 +54,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         tools:text="Daffodil"
-        style="@style/FlowerList.Name"
+        style="@style/FlowerList.Common_name"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/genus"
@@ -59,12 +66,64 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        tools:text="Daffodil"
-        style="@style/FlowerList.Name"
+        tools:text="Narcissus"
+        style="@style/FlowerList.Genus"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"/>
 
 
 
+        <TextView
+            android:id="@+id/wiki_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            tools:text="longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglongtext"
+            style="@style/FlowerList.Wiki_text"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:scrollHorizontally="false"/>
+
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0.5"
+            android:text="Wikipedia"
+            android:id="@+id/wiki_button"
+            android:layout_marginLeft="10dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0.5"
+            android:text="Google"
+            android:id="@+id/google_button" />
+
+
+
+
+    </LinearLayout>
+
+
+
+
 </LinearLayout>
+
+</ScrollView>

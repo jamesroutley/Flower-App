@@ -44,6 +44,8 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
     JSONArray jsonArray = null;
     ListView mainListView;
     String filePath = null;
+    ProgressDialog progress;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,8 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
         mainListView.setAdapter(mFlowerAdapter);
         mainListView.setOnItemClickListener(this);
 
+
+
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
         final File sourceFile = new File(filePath);
@@ -67,8 +71,7 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
 
         //mFlowerAdapter.updateData(jsonTemp);
 
-        // UPLOAD IMAGE
-        //dialog = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
+        progress = ProgressDialog.show(ResultsActivity.this, "", "Uploading file...", true);
         new uploadFileTask().execute(sourceFile);
     }
 
@@ -211,10 +214,12 @@ public class ResultsActivity extends ActionBarActivity implements AdapterView.On
 
             if (jsonArray != null) {
                 mFlowerAdapter.updateData(jsonArray);
+                progress.dismiss();
             }
             else {
                 Toast.makeText(ResultsActivity.this, "Upload Error",
                         Toast.LENGTH_SHORT).show();
+                progress.dismiss();
             }
         }
 
